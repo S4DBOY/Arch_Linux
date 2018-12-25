@@ -37,13 +37,15 @@ html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+str(sys.argv[1]))
 regex = re.findall('<p style="margin:.*?;?">(?:.|[żźćńółęąśŻŹĆĄŚĘŁÓŃ])*?(?<=<\/p>)',str(html_page.read()));
 
 utf_8bytes = {"\\xc3\\x93":"Ó","\\xc3\\xb3":"ó","\\xc4\\x84":"Ą","\\xc4\\x85":"ą","\\xc4\\x86":"Ć","\\xc4\\x87":"ć","\\xc4\\x98":"Ę","\\xc4\\x99":"ę","\\xc5\\x81":"Ł","\\xc5\\x82":"ł","\\xc5\\x83":"Ń","\\xc5\\x84":"ń","\\xc5\\x9a":"Ś","\\xc5\\x9b":"ś","\\xc5\\xb9":"Ź","\\xc5\\xba":"ź","\\xc5\\xbb":"Ż","\\xc5\\xbc":"ż"}
+if not regex:
+    print ("\'"+str(sys.argv[1])+'\''+" nie występuje w słowniku.")
+else:
+    #Pętla zamieniająca slashe na polskie znaki bez zamiany listy w string
+    for klucz in utf_8bytes:
+        regex=[w.replace(klucz,utf_8bytes[klucz]) for w in regex];
 
-#Pętla zamieniająca slashe na polskie znaki bez zamiany listy w string
-for klucz in utf_8bytes:
-    regex=[w.replace(klucz,utf_8bytes[klucz]) for w in regex];
-
-regex=[w.replace("<br />",'\n') for w in regex]; #usunięcie wszystkich <br />
-str1 = ''.join(regex); #zamiana list w string
-str1 = str1[str1.index('>')+1:]
-str1 = str1[:str1.index('<')] #wyświetlenie tylko pierwszej definicji
-print("\t\t\t\t"+str(sys.argv[1]).upper()+"\n\n"+str1)
+    regex=[w.replace("<br />",'\n') for w in regex];
+    str1 = ''.join(regex); #zamiana list w string
+    str1 = str1[str1.index('>')+1:]
+    str1 = str1[:str1.index('<')]
+    print("\t\t\t\t"+str(sys.argv[1]).title()+"\n\n"+str1)
