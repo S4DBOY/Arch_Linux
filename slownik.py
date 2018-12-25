@@ -42,4 +42,8 @@ utf_8bytes = {"\\xc3\\x93":"Ó","\\xc3\\xb3":"ó","\\xc4\\x84":"Ą","\\xc4\\x85"
 for klucz in utf_8bytes:
     regex=[w.replace(klucz,utf_8bytes[klucz]) for w in regex];
 
-print(regex)
+regex=[w.replace("<br />",'\n') for w in regex]; #usunięcie wszystkich <br />
+str1 = ''.join(regex); #zamiana list w string
+str1 = str1[str1.index('>')+1:]
+str1 = str1[:str1.index('<')] #wyświetlenie tylko pierwszej definicji
+print("\t\t\t\t"+str(sys.argv[1]).upper()+"\n\n"+str1)
