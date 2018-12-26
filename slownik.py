@@ -30,8 +30,24 @@ class MyHTMLParser(HTMLParser):
 #creating an object of the overridden class
 parser = MyHTMLParser()
 
+#zamiana polskich znakow na hex unicode
+fraza = str(sys.argv[1])
+
+unicode_hex = { "ą":"%C4%85",
+                "ż":"%C5%BC",
+                "ź":"%C5%BA",
+                "ć":"%C4%87",
+                "ń":"%C5%84",
+                "ł":"%C5%82",
+                "ó":"%C3%B3",
+                "ę":"%C4%99",
+                "ś":"%C5%9B" }
+
+for k in unicode_hex:
+    fraza = fraza.replace(k,unicode_hex[k]) #aby strona mogła odczytać polskie znaki
+
 #Opening NYTimes site using urllib2
-html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+str(sys.argv[1]))
+html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+fraza)
 
 #Feeding the content
 regex = re.findall('<p style="margin:.*?;?">(?:.|[żźćńółęąśŻŹĆĄŚĘŁÓŃ])*?(?<=<\/p>)',str(html_page.read()));
