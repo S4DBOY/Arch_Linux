@@ -31,7 +31,6 @@ class MyHTMLParser(HTMLParser):
 parser = MyHTMLParser()
 
 #zamiana polskich znakow na hex unicode
-fraza = str(sys.argv[1])
 
 unicode_hex = { "ą":"%C4%85",
                 "ż":"%C5%BC",
@@ -42,26 +41,29 @@ unicode_hex = { "ą":"%C4%85",
                 "ó":"%C3%B3",
                 "ę":"%C4%99",
                 "ś":"%C5%9B" }
-
+lista_fraz = []
+lista_fraz = lista_fraz + sys.argv
+lista_fraz = lista_fraz[1:]
 for k in unicode_hex:
-    fraza = fraza.replace(k,unicode_hex[k]) #aby strona mogła odczytać polskie znaki
+    fraz = [f.replace(k,unicode_hex[k]) for f in lista_fraz] #aby strona mogła odczytać polskie znaki
 
-#Opening NYTimes site using urllib2
-html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+fraza)
+html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+'+'.join(fraz))
 
-#Feeding the content
+#Wyrażenie regularne
 regex = re.findall('<p style="margin:.*?;?">(?:.|[żźćńółęąśŻŹĆĄŚĘŁÓŃ])*?(?<=<\/p>)',str(html_page.read()));
 
 utf_8bytes = {"\\xc3\\x93":"Ó","\\xc3\\xb3":"ó","\\xc4\\x84":"Ą","\\xc4\\x85":"ą","\\xc4\\x86":"Ć","\\xc4\\x87":"ć","\\xc4\\x98":"Ę","\\xc4\\x99":"ę","\\xc5\\x81":"Ł","\\xc5\\x82":"ł","\\xc5\\x83":"Ń","\\xc5\\x84":"ń","\\xc5\\x9a":"Ś","\\xc5\\x9b":"ś","\\xc5\\xb9":"Ź","\\xc5\\xba":"ź","\\xc5\\xbb":"Ż","\\xc5\\xbc":"ż"}
+
 if not regex:
-    print ("\'"+str(sys.argv[1])+'\''+" nie występuje w słowniku.")
+    print ("\'" + ' '.join(lista_fraz) +'\'' + " nie występuje w słowniku.")
 else:
     #Pętla zamieniająca slashe na polskie znaki bez zamiany listy w string
     for klucz in utf_8bytes:
         regex=[w.replace(klucz,utf_8bytes[klucz]) for w in regex];
-
     regex=[w.replace("<br />",'\n') for w in regex];
+    regex=[w.replace("&quot;",'\"') for w in regex]
     str1 = ''.join(regex); #zamiana list w string
     str1 = str1[str1.index('>')+1:]
     str1 = str1[:str1.index('<')]
-    print("\t\t\t\t"+str(sys.argv[1]).title()+"\n\n"+str1)
+    fraza = ' '.join(lista_fraz) #zamiana listy fraz w string
+    print("\t\t\t\t"+fraza.title()+"\n\n"+str1)
