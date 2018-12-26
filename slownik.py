@@ -32,22 +32,25 @@ parser = MyHTMLParser()
 
 #zamiana polskich znakow na hex unicode
 
-unicode_hex = { "ą":"%C4%85",
-                "ż":"%C5%BC",
-                "ź":"%C5%BA",
-                "ć":"%C4%87",
-                "ń":"%C5%84",
-                "ł":"%C5%82",
-                "ó":"%C3%B3",
-                "ę":"%C4%99",
-                "ś":"%C5%9B" }
-lista_fraz = []
-lista_fraz = lista_fraz + sys.argv
+unicode_hex = { 'ą':"%C4%85",
+                'ż':"%C5%BC",
+                'ź':"%C5%BA",
+                'ć':"%C4%87",
+                'ń':"%C5%84",
+                'ł':"%C5%82",
+                'ó':"%C3%B3",
+                'ę':"%C4%99",
+                'ś':"%C5%9B",
+                '\'':"%27"}
+lista_fraz = [] 
+lista_fraz = lista_fraz + sys.argv 
 lista_fraz = lista_fraz[1:]
-for k in unicode_hex:
-    fraz = [f.replace(k,unicode_hex[k]) for f in lista_fraz] #aby strona mogła odczytać polskie znaki
+fraz = '+'.join(lista_fraz)
 
-html_page = html_page = urllib2.urlopen("http://www.sjp.pl/"+'+'.join(fraz))
+for k in unicode_hex:
+    fraz = fraz.replace(k,unicode_hex[k]) #aby strona mogła odczytać polskie znaki
+
+html_page = urllib2.urlopen("http://www.sjp.pl/"+fraz)
 
 #Wyrażenie regularne
 regex = re.findall('<p style="margin:.*?;?">(?:.|[żźćńółęąśŻŹĆĄŚĘŁÓŃ])*?(?<=<\/p>)',str(html_page.read()));
