@@ -10,15 +10,13 @@ how to run the script with a doubleclick? (work with Gnome)
 
 """
 
+import requests, tkFileDialog, pyperclip, tkMessageBox, os
+from Tkinter import *
 
-import requests, tkFileDialog
-import tkMessageBox
-from Tkinter import * 
-import pyperclip
 f = tkFileDialog.askopenfilename()
 
 files = {
-    'file': (f, f),
+    'file': (os.path.basename(f), open(f, 'rb')),
 }
 
 r = requests.post('https://api.anonfiles.com/upload', files=files)
@@ -33,5 +31,6 @@ def apress():
 
 btn = Button(screen, text = 'copy', width = 5, command = apress) 
 btn.pack()
+
 
 mainloop()
